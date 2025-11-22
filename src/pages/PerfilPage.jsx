@@ -313,7 +313,7 @@ const UserProfile = () => {
         ? userData.url_avatar
         : `https://capacitacionback.sistemasudh.com/${userData.url_avatar}`;
     }
-    return "/public/img/perfil.png";
+    return "/img/perfil.png";
   };
   const getFullName = () => {
     if (!userData) return "Cargando...";
@@ -345,7 +345,7 @@ const UserProfile = () => {
               alt="Foto de perfil"
               className="user-avatar-centered"
               onError={(e) => {
-                e.target.src = "/public/img/perfil.png";
+                e.target.src = "./img/perfil.png";
               }}
             />
             <div className="avatar-badge-centered">
