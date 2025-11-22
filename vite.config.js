@@ -11,4 +11,7 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    minify: false,  // 🔹 temporal para depurar
+  },
 })
