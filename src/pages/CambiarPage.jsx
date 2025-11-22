@@ -32,7 +32,6 @@ const RestablecerContrasena = () => {
     }
   };
 
-
   return (
     <div className="restablecer-container">
       <div className="restablecer-wrapper">
@@ -44,7 +43,7 @@ const RestablecerContrasena = () => {
           <div className="restablecer-content">
             <div className="restablecer-logo-container">
               <img
-                src="../public/img/logo-region.png"
+                src="./img/logo-region.png"
                 alt="Logo"
                 className="restablecer-logo-image"
               />
@@ -57,7 +56,8 @@ const RestablecerContrasena = () => {
 
             <div className="restablecer-features">
               <p className="restablecer-features-description">
-                Asegúrate de que tu nueva contraseña sea segura y fácil de recordar
+                Asegúrate de que tu nueva contraseña sea segura y fácil de
+                recordar
               </p>
               <div className="restablecer-features-list">
                 <span className="restablecer-feature-dot"></span>
@@ -84,13 +84,16 @@ const RestablecerContrasena = () => {
             {isSubmitted ? (
               <div className="restablecer-success">
                 <svg className="restablecer-success-icon" viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  <path
+                    fill="currentColor"
+                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
+                  />
                 </svg>
                 <h3>¡Contraseña restablecida!</h3>
                 <p>Tu contraseña ha sido cambiada exitosamente.</p>
-                <button 
+                <button
                   className="restablecer-login-button"
-                  onClick={() => window.location.href = "/"}
+                  onClick={() => (window.location.href = "/")}
                 >
                   Iniciar Sesión
                 </button>
@@ -124,7 +127,7 @@ const RestablecerContrasena = () => {
                       disabled={isLoading}
                       minLength="8"
                     />
-                    <button 
+                    <button
                       type="button"
                       className="restablecer-password-toggle"
                       onClick={() => setShowPassword(!showPassword)}
@@ -189,10 +192,12 @@ const RestablecerContrasena = () => {
                       required
                       disabled={isLoading}
                     />
-                    <button 
+                    <button
                       type="button"
                       className="restablecer-password-toggle"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
                     >
                       <svg
                         fill="none"
@@ -230,9 +235,11 @@ const RestablecerContrasena = () => {
                 </div>
 
                 {/* Botón de restablecer */}
-                <button 
-                  type="submit" 
-                  className={`restablecer-button ${isLoading ? 'restablecer-loading' : ''}`}
+                <button
+                  type="submit"
+                  className={`restablecer-button ${
+                    isLoading ? "restablecer-loading" : ""
+                  }`}
                   disabled={isLoading}
                 >
                   {isLoading ? (
