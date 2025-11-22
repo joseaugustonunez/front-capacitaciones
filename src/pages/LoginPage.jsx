@@ -75,7 +75,7 @@ const LoginComponent = () => {
           <div className="welcome-content">
             <div className="logo-container">
               <img
-                src="../public/img/logo-region.png"
+                src="./img/logo-region.png"
                 alt="Logo"
                 className="logo-image"
               />
