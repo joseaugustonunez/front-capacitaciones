@@ -1,0 +1,86 @@
+.gestor-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.title-icon-gestor {
+  color: #3b82f6;
+}
+
+/* 🔹 Contenedor fila de selects */
+.video-select-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;       /* todos en fila en pantallas grandes */
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+/* 🔹 Cada select dentro de su caja */
+.video-select-container {
+  flex: 1;
+  max-width: 300px;
+}
+
+/* 🔹 Estilos del select */
+.video-select-container select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23666' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 16px;
+}
+
+/* Hover */
+.video-select-container select:hover {
+  border-color: #6666ff;
+  box-shadow: 0 3px 8px rgba(102, 102, 255, 0.2);
+}
+
+/* Focus */
+.video-select-container select:focus {
+  border-color: #4444ff;
+  box-shadow: 0 0 0 3px rgba(102, 102, 255, 0.25);
+}
+
+/* Opciones */
+.video-select-container option {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* 🔹 Responsive */
+@media (max-width: 600px) {
+  .gestor-title {
+    font-size: 1.8rem;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .video-select-row {
+    flex-direction: column; /* se apilan en pantallas pequeñas */
+    align-items: center;
+  }
+
+  .video-select-container {
+    max-width: 100%; /* ocupa todo el ancho en móvil */
+  }
+}

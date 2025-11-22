@@ -1,0 +1,36 @@
+.header-spacer {
+          height: 70px; /* Ajusta según la altura real de tu header */
+          min-height: 70px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .header-spacer {
+            height: 70px; /* Altura menor en móviles */
+            min-height: 70px;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .header-spacer {
+            height: 65px; /* Altura aún menor en pantallas muy pequeñas */
+            min-height: 65px;
+          }
+        }
+        
+        /* Asegura que el main tenga scroll suave */
+        main {
+          scroll-behavior: smooth;
+          position: relative;
+          z-index: 1;
+        }
+        
+        /* Previene el layout shift durante la carga */
+        .flex-col {
+          scroll-behavior: smooth;
+        }
+        
+        /* Opcional: Añade padding superior al main como alternativa */
+        /* main {
+          padding-top: 80px;
+        }

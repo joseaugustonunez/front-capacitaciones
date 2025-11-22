@@ -1,0 +1,54 @@
+#1db178 – Verde principal
+
+#a2e4cc – Verde claro
+
+#157a58 – Verde oscuro
+
+#1d6eb1 – Azul acento
+
+#f8f8f8 – Neutro claro
+
+#e2f5ee – Fondo suave
+
+#ffe3b3 – Amarillo pastel (energía sutil)
+
+#f7c1bb – Rosa coral claro (calidez y contraste)
+
+#1db178
+
+#a2e4cc
+
+#157a58
+
+#1d6eb1
+
+#f8f8f8
+
+
+ #1db178;
+ #a2e4cc;
+ #157a58;
+ #1d6eb1;
+ #f8f8f8;
+#ffffff;
+#2d3748;
+  #718096;
+  SELECT 
+        ic.id_usuario,
+        ic.id_curso,
+        c.titulo AS curso,
+        SUM(v.duracion_segundos) AS duracion_total,
+        SUM(LEAST(pv.segundos_vistos, v.duracion_segundos)) AS segundos_vistos,
+        ROUND(
+            (SUM(LEAST(pv.segundos_vistos, v.duracion_segundos)) / SUM(v.duracion_segundos)) * 100,
+            2
+        ) AS porcentaje_avance
+    FROM inscripciones_cursos ic
+    JOIN cursos c ON ic.id_curso = c.id
+    JOIN modulos_curso mc ON c.id = mc.id_curso
+    JOIN videos v ON mc.id = v.id_modulo
+    LEFT JOIN progreso_videos pv 
+      ON v.id = pv.id_video 
+      AND pv.id_usuario = ic.id_usuario
+    WHERE ic.id_usuario = 1
+    GROUP BY ic.id_usuario, ic.id_curso;
