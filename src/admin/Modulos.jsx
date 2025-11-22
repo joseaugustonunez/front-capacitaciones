@@ -940,7 +940,7 @@ function Modulos() {
       <div className="modulos-curso-card">
         <div className="modulos-curso-header">
           <img
-            src={`http://localhost:3000${curso.url_miniatura}`}
+            src={`https://capacitacionback.sistemasudh.com${curso.url_miniatura}`}
             alt={curso.titulo}
             className="modulos-curso-imagen"
           />
