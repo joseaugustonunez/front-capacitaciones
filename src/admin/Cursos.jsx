@@ -182,44 +182,43 @@ const Cursos = () => {
     resetearFormulario();
   };
 
-const manejarEliminar = (id, titulo) => {
-  toast((t) => (
-    <div className="toast-confirm-container">
-      <span className="toast-confirm-text">
-        ¿Eliminar el curso <b>"{titulo}"</b>?
-      </span>
-      <div className="toast-confirm-actions">
-        <button
-          className="btn-confirm btn-danger"
-          onClick={async () => {
-            toast.dismiss(t.id);
-            try {
-              setLoading(true);
-              await eliminarCurso(id);
-              toast.success(`Curso "${titulo}" eliminado correctamente`);
-              await cargarDatos();
-            } catch (err) {
-              console.error("Error al eliminar el curso:", err);
-              toast.error("Error al eliminar el curso");
-              setError("Error al eliminar el curso");
-            } finally {
-              setLoading(false);
-            }
-          }}
-        >
-          Sí
-        </button>
-        <button
-          className="btn-confirm btn-success"
-          onClick={() => toast.dismiss(t.id)}
-        >
-          No
-        </button>
+  const manejarEliminar = (id, titulo) => {
+    toast((t) => (
+      <div className="toast-confirm-container">
+        <span className="toast-confirm-text">
+          ¿Eliminar el curso <b>"{titulo}"</b>?
+        </span>
+        <div className="toast-confirm-actions">
+          <button
+            className="btn-confirm btn-danger"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                setLoading(true);
+                await eliminarCurso(id);
+                toast.success(`Curso "${titulo}" eliminado correctamente`);
+                await cargarDatos();
+              } catch (err) {
+                console.error("Error al eliminar el curso:", err);
+                toast.error("Error al eliminar el curso");
+                setError("Error al eliminar el curso");
+              } finally {
+                setLoading(false);
+              }
+            }}
+          >
+            Sí
+          </button>
+          <button
+            className="btn-confirm btn-success"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
       </div>
-    </div>
-  ));
-};
-
+    ));
+  };
 
   const limpiarFiltros = () => {
     setFiltros({
@@ -234,33 +233,33 @@ const manejarEliminar = (id, titulo) => {
   // Filtrado de cursos con protección adicional
   const cursosFiltrados = Array.isArray(cursos)
     ? cursos.filter((curso) => {
-      if (!curso) return false;
+        if (!curso) return false;
 
-      const coincideBusqueda =
-        curso.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        curso.descripcion_corta
-          ?.toLowerCase()
-          .includes(searchTerm.toLowerCase());
+        const coincideBusqueda =
+          curso.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          curso.descripcion_corta
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase());
 
-      const coincideCategoria =
-        !filtros.categoria ||
-        curso.id_categoria?.toString() === filtros.categoria;
-      const coincideNivel =
-        !filtros.nivel || curso.nivel_dificultad === filtros.nivel;
-      const coincideEstado =
-        !filtros.estado || curso.estado === filtros.estado;
-      const coincideInstructor =
-        !filtros.instructor ||
-        curso.id_instructor?.toString() === filtros.instructor;
+        const coincideCategoria =
+          !filtros.categoria ||
+          curso.id_categoria?.toString() === filtros.categoria;
+        const coincideNivel =
+          !filtros.nivel || curso.nivel_dificultad === filtros.nivel;
+        const coincideEstado =
+          !filtros.estado || curso.estado === filtros.estado;
+        const coincideInstructor =
+          !filtros.instructor ||
+          curso.id_instructor?.toString() === filtros.instructor;
 
-      return (
-        coincideBusqueda &&
-        coincideCategoria &&
-        coincideNivel &&
-        coincideEstado &&
-        coincideInstructor
-      );
-    })
+        return (
+          coincideBusqueda &&
+          coincideCategoria &&
+          coincideNivel &&
+          coincideEstado &&
+          coincideInstructor
+        );
+      })
     : [];
 
   const obtenerNombreCategoria = (id) => {
@@ -492,7 +491,6 @@ const manejarEliminar = (id, titulo) => {
               />
             </div>
 
-
             {/* Botones del formulario */}
             <div className="form-actions">
               <button
@@ -641,7 +639,7 @@ const manejarEliminar = (id, titulo) => {
                   <div className="card-image">
                     {curso.url_miniatura ? (
                       <img
-                        src={`http://localhost:3000${curso.url_miniatura}`}
+                        src={`https://capacitacionback.sistemasudh.com ${curso.url_miniatura}`}
                         alt={curso.titulo}
                         onError={(e) => {
                           e.target.style.display = "none";

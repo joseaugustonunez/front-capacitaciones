@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Play, User, Save, Camera, Eye, EyeOff, CheckCircle, XCircle, Loader } from 'lucide-react';
-import CursosInscritosPage from '../pages/CursosInscritosPage';
-import '../styles/perfil.css';
+import React, { useState, useEffect } from "react";
+import {
+  Play,
+  User,
+  Save,
+  Camera,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  XCircle,
+  Loader,
+} from "lucide-react";
+import CursosInscritosPage from "../pages/CursosInscritosPage";
+import "../styles/perfil.css";
 import { obtenerCursosInscritosConDetalles } from "../api/Inscripciones";
-import { cambiarContrasena, subirAvatar, obtenerEstadisticas } from "../api/Usuarios"
+import {
+  cambiarContrasena,
+  subirAvatar,
+  obtenerEstadisticas,
+} from "../api/Usuarios";
 
 const UserProfile = () => {
-  const [activeTab, setActiveTab] = useState('perfil');
+  const [activeTab, setActiveTab] = useState("perfil");
   const [userData, setUserData] = useState(null);
   const [editForm, setEditForm] = useState({});
   const [courses, setCourses] = useState([]);
@@ -14,15 +28,15 @@ const UserProfile = () => {
   const [showPassword, setShowPassword] = useState({
     current: false,
     new: false,
-    confirm: false
+    confirm: false,
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
-    contrasenaActual: '',
-    nuevaContrasena: '',
-    confirmarContrasena: ''
+    contrasenaActual: "",
+    nuevaContrasena: "",
+    confirmarContrasena: "",
   });
   useEffect(() => {
     const fetchStats = async () => {
@@ -58,7 +72,7 @@ const UserProfile = () => {
           instructor: curso.instructor_nombre || "Instructor no disponible",
           thumbnail: curso.url_miniatura.startsWith("http")
             ? curso.url_miniatura
-            : `http://localhost:3000${curso.url_miniatura}`,
+            : `https://capacitacionback.sistemasudh.com ${curso.url_miniatura}`,
           duration: `${curso.duracion_horas}h`,
           category: curso.categoria_nombre || "Sin categoría",
           views: curso.vistas || "0",
@@ -76,22 +90,23 @@ const UserProfile = () => {
   useEffect(() => {
     const getUserData = () => {
       try {
-        const storedUser = localStorage.getItem('userData');
+        const storedUser = localStorage.getItem("userData");
         if (storedUser) {
           const user = JSON.parse(storedUser);
           return {
             id: user.id,
-            nombre: user.nombre || 'Usuario',
-            apellido: user.apellido || '',
-            correo: user.correo || 'usuario@ejemplo.com',
-            rol: user.rol || 'estudiante',
+            nombre: user.nombre || "Usuario",
+            apellido: user.apellido || "",
+            correo: user.correo || "usuario@ejemplo.com",
+            rol: user.rol || "estudiante",
             url_avatar: user.url_avatar,
-            coverImage: "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
+            coverImage:
+              "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
             stats: {
               videosInscritos: 24,
               horasVistas: 156,
-              certificados: 8
-            }
+              certificados: 8,
+            },
           };
         }
 
@@ -102,15 +117,16 @@ const UserProfile = () => {
           correo: "usuario@ejemplo.com",
           rol: "estudiante",
           url_avatar: null,
-          coverImage: "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
+          coverImage:
+            "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
           stats: {
             videosInscritos: 0,
             horasVistas: 0,
-            certificados: 0
-          }
+            certificados: 0,
+          },
         };
       } catch (error) {
-        console.error('Error al obtener datos del usuario:', error);
+        console.error("Error al obtener datos del usuario:", error);
         return {
           id: 1,
           nombre: "Usuario",
@@ -120,12 +136,13 @@ const UserProfile = () => {
           bio: "",
           rol: "estudiante",
           url_avatar: null,
-          coverImage: "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
+          coverImage:
+            "https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=200&fit=crop",
           stats: {
             videosInscritos: 0,
             horasVistas: 0,
-            certificados: 0
-          }
+            certificados: 0,
+          },
         };
       }
     };
@@ -137,36 +154,40 @@ const UserProfile = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditForm(prev => ({
+    setEditForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handlePasswordInputChange = (e) => {
     const { name, value } = e.target;
-    setPasswordForm(prev => ({
+    setPasswordForm((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleSaveChanges = () => {
     try {
-      localStorage.setItem('userData', JSON.stringify(editForm));
+      localStorage.setItem("userData", JSON.stringify(editForm));
       setUserData(editForm);
-      console.log('Datos guardados:', editForm);
-      setSuccess('Información personal guardada exitosamente');
+      console.log("Datos guardados:", editForm);
+      setSuccess("Información personal guardada exitosamente");
       setTimeout(() => setSuccess(""), 3000);
     } catch (error) {
-      console.error('Error al guardar datos:', error);
-      setError('Error al guardar la información');
+      console.error("Error al guardar datos:", error);
+      setError("Error al guardar la información");
       setTimeout(() => setError(""), 3000);
     }
   };
 
   const handleSavePassword = async () => {
-    if (!passwordForm.contrasenaActual || !passwordForm.nuevaContrasena || !passwordForm.confirmarContrasena) {
+    if (
+      !passwordForm.contrasenaActual ||
+      !passwordForm.nuevaContrasena ||
+      !passwordForm.confirmarContrasena
+    ) {
       setError("Todos los campos son obligatorios");
       setTimeout(() => setError(""), 3000);
       return;
@@ -187,13 +208,13 @@ const UserProfile = () => {
     setError("");
     setIsChangingPassword(true);
 
-    const user = JSON.parse(localStorage.getItem('userData'));
+    const user = JSON.parse(localStorage.getItem("userData"));
 
     try {
       const response = await cambiarContrasena(user.id, {
         contrasenaActual: passwordForm.contrasenaActual,
         nuevaContrasena: passwordForm.nuevaContrasena,
-        confirmarContrasena: passwordForm.confirmarContrasena
+        confirmarContrasena: passwordForm.confirmarContrasena,
       });
 
       if (!response) {
@@ -205,14 +226,16 @@ const UserProfile = () => {
       setPasswordForm({
         contrasenaActual: "",
         nuevaContrasena: "",
-        confirmarContrasena: ""
+        confirmarContrasena: "",
       });
-
     } catch (error) {
       console.error("Error al cambiar contraseña:", error);
 
       if (error.response) {
-        setError(error.response.data?.message || "Error del servidor al cambiar la contraseña");
+        setError(
+          error.response.data?.message ||
+            "Error del servidor al cambiar la contraseña"
+        );
       } else if (error.request) {
         setError("No se pudo conectar con el servidor. Verifica tu conexión.");
       } else {
@@ -230,41 +253,44 @@ const UserProfile = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      setError('Por favor, selecciona una imagen válida');
+    if (!file.type.startsWith("image/")) {
+      setError("Por favor, selecciona una imagen válida");
       setTimeout(() => setError(""), 3000);
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError('La imagen debe ser menor a 5MB');
+      setError("La imagen debe ser menor a 5MB");
       setTimeout(() => setError(""), 3000);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (event) => {
-      setEditForm(prev => ({
+      setEditForm((prev) => ({
         ...prev,
-        url_avatar: event.target.result
+        url_avatar: event.target.result,
       }));
     };
     reader.readAsDataURL(file);
 
     try {
-      const user = JSON.parse(localStorage.getItem('userData'));
+      const user = JSON.parse(localStorage.getItem("userData"));
       const response = await subirAvatar(user.id, file);
 
       if (response && response.url_avatar) {
-        setEditForm(prev => ({
+        setEditForm((prev) => ({
           ...prev,
-          url_avatar: `http://localhost:3000${response.url_avatar}`
+          url_avatar: `https://capacitacionback.sistemasudh.com ${response.url_avatar}`,
         }));
 
-        const updatedUser = { ...user, url_avatar: `http://localhost:3000${response.url_avatar}` };
-        localStorage.setItem('userData', JSON.stringify(updatedUser));
+        const updatedUser = {
+          ...user,
+          url_avatar: `https://capacitacionback.sistemasudh.com ${response.url_avatar}`,
+        };
+        localStorage.setItem("userData", JSON.stringify(updatedUser));
 
-        setSuccess('Avatar actualizado correctamente');
+        setSuccess("Avatar actualizado correctamente");
         setTimeout(() => setSuccess(""), 3000);
       }
     } catch (error) {
@@ -274,19 +300,18 @@ const UserProfile = () => {
     }
   };
 
-
   const togglePasswordVisibility = (field) => {
-    setShowPassword(prev => ({
+    setShowPassword((prev) => ({
       ...prev,
-      [field]: !prev[field]
+      [field]: !prev[field],
     }));
   };
 
   const getAvatarImage = () => {
     if (userData?.url_avatar) {
-      return userData.url_avatar.startsWith('http')
+      return userData.url_avatar.startsWith("http")
         ? userData.url_avatar
-        : `http://localhost:3000/${userData.url_avatar}`;
+        : `https://capacitacionback.sistemasudh.com/${userData.url_avatar}`;
     }
     return "/public/img/perfil.png";
   };
@@ -335,18 +360,24 @@ const UserProfile = () => {
           </div>
         </div>
 
-        {userData.rol !== 'admin' && (
+        {userData.rol !== "admin" && (
           <div className="user-stats">
             <div className="stat-item-perfil">
-              <span className="stat-number-perfil">{userData.stats.videosInscritos}</span>
+              <span className="stat-number-perfil">
+                {userData.stats.videosInscritos}
+              </span>
               <span className="stat-label">Cursos Inscritos</span>
             </div>
             <div className="stat-item-perfil">
-              <span className="stat-number-perfil">{userData.stats.horasVistas}h</span>
+              <span className="stat-number-perfil">
+                {userData.stats.horasVistas}h
+              </span>
               <span className="stat-label">Horas Vistas</span>
             </div>
             <div className="stat-item-perfil">
-              <span className="stat-number-perfil">{userData.stats.certificados}</span>
+              <span className="stat-number-perfil">
+                {userData.stats.certificados}
+              </span>
               <span className="stat-label">Certificados</span>
             </div>
           </div>
@@ -355,17 +386,17 @@ const UserProfile = () => {
 
       <div className="profile-nav">
         <button
-          className={`nav-tab ${activeTab === 'perfil' ? 'active' : ''}`}
-          onClick={() => setActiveTab('perfil')}
+          className={`nav-tab ${activeTab === "perfil" ? "active" : ""}`}
+          onClick={() => setActiveTab("perfil")}
         >
           <User size={18} />
           Mi Perfil
         </button>
         {/* Solo muestra "Mis Cursos" si NO es admin */}
-        {userData.rol !== 'admin' && (
+        {userData.rol !== "admin" && (
           <button
-            className={`nav-tab ${activeTab === 'cursos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('cursos')}
+            className={`nav-tab ${activeTab === "cursos" ? "active" : ""}`}
+            onClick={() => setActiveTab("cursos")}
           >
             <Play size={18} />
             Mis Cursos
@@ -374,17 +405,23 @@ const UserProfile = () => {
       </div>
 
       {(error || success) && (
-        <div className={`status-message ${error ? 'error' : 'success'}`}>
+        <div className={`status-message ${error ? "error" : "success"}`}>
           {error ? <XCircle size={20} /> : <CheckCircle size={20} />}
           <span>{error || success}</span>
-          <button onClick={() => { setError(""); setSuccess(""); }}>×</button>
+          <button
+            onClick={() => {
+              setError("");
+              setSuccess("");
+            }}
+          >
+            ×
+          </button>
         </div>
       )}
 
       <div className="profile-content">
-        {activeTab === 'perfil' && (
+        {activeTab === "perfil" && (
           <div className="profile-tab-content">
-
             <div className="edit-form-container two-column-layout">
               <div className="left-column">
                 <div className="avatar-upload-section">
@@ -405,7 +442,7 @@ const UserProfile = () => {
                           type="file"
                           accept="image/*"
                           onChange={handleAvatarChange}
-                          style={{ display: 'none' }}
+                          style={{ display: "none" }}
                         />
                       </label>
                       <p className="avatar-help-text">
@@ -415,7 +452,10 @@ const UserProfile = () => {
                   </div>
                 </div>
 
-                <form className="edit-form" onSubmit={(e) => e.preventDefault()}>
+                <form
+                  className="edit-form"
+                  onSubmit={(e) => e.preventDefault()}
+                >
                   <h3>Información Personal</h3>
 
                   <div className="form-group-perfil">
@@ -424,7 +464,7 @@ const UserProfile = () => {
                       type="text"
                       id="nombre"
                       name="nombre"
-                      value={editForm.nombre || ''}
+                      value={editForm.nombre || ""}
                       onChange={handleInputChange}
                       className="form-input"
                       required
@@ -437,7 +477,7 @@ const UserProfile = () => {
                       type="text"
                       id="apellido"
                       name="apellido"
-                      value={editForm.apellido || ''}
+                      value={editForm.apellido || ""}
                       onChange={handleInputChange}
                       className="form-input"
                       required
@@ -450,7 +490,7 @@ const UserProfile = () => {
                       type="email"
                       id="correo"
                       name="correo"
-                      value={editForm.correo || ''}
+                      value={editForm.correo || ""}
                       onChange={handleInputChange}
                       className="form-input"
                       required
@@ -475,7 +515,10 @@ const UserProfile = () => {
                   <div className="password-header">
                     <h3>Cambiar Contraseña</h3>
                   </div>
-                  <form className="password-form" onSubmit={(e) => e.preventDefault()}>
+                  <form
+                    className="password-form"
+                    onSubmit={(e) => e.preventDefault()}
+                  >
                     <div className="form-group-perfil">
                       <label htmlFor="currentPassword">Contraseña Actual</label>
                       <div className="password-input-container">
@@ -493,7 +536,11 @@ const UserProfile = () => {
                           className="password-toggle"
                           onClick={() => togglePasswordVisibility("current")}
                         >
-                          {showPassword.current ? <EyeOff size={18} /> : <Eye size={18} />}
+                          {showPassword.current ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -516,13 +563,19 @@ const UserProfile = () => {
                           className="password-toggle"
                           onClick={() => togglePasswordVisibility("new")}
                         >
-                          {showPassword.new ? <EyeOff size={18} /> : <Eye size={18} />}
+                          {showPassword.new ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                     </div>
 
                     <div className="form-group-perfil">
-                      <label htmlFor="confirmPassword">Confirmar Nueva Contraseña</label>
+                      <label htmlFor="confirmPassword">
+                        Confirmar Nueva Contraseña
+                      </label>
                       <div className="password-input-container">
                         <input
                           type={showPassword.confirm ? "text" : "password"}
@@ -539,7 +592,11 @@ const UserProfile = () => {
                           className="password-toggle"
                           onClick={() => togglePasswordVisibility("confirm")}
                         >
-                          {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                          {showPassword.confirm ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
                         </button>
                       </div>
                     </div>
@@ -569,8 +626,7 @@ const UserProfile = () => {
           </div>
         )}
 
-      
-        {activeTab === 'cursos' && userData.rol !== 'admin' && (
+        {activeTab === "cursos" && userData.rol !== "admin" && (
           <div className="cursos-tab-content">
             <CursosInscritosPage inscribedVideos={courses} />
           </div>
