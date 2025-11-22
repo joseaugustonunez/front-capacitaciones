@@ -265,7 +265,7 @@ const VideoPlayer = forwardRef(
               src={
                 urlVideo?.startsWith("http")
                   ? urlVideo
-                  : `https://capacitacionback.sistemasudh.com ${urlVideo}`
+                  : `https://capacitacionback.sistemasudh.com${urlVideo}`
               }
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleLoadedMetadata}

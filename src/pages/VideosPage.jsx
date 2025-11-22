@@ -533,8 +533,8 @@ const VideosPage = () => {
               current: video.id == lessonId,
               videoUrl: video.url_video?.startsWith("http")
                 ? video.url_video
-                : `http://localhost:3000${video.url_video}`,
-              thumbnailUrl: `http://localhost:3000${video.url_miniatura}`,
+                : `https://capacitacionback.sistemasudh.com${video.url_video}`,
+              thumbnailUrl: `https://capacitacionback.sistemasudh.com${video.url_miniatura}`,
               transcription: video.transcripcion,
               isPreview: video.es_vista_previa,
               order: video.indice_orden || index + 1,
