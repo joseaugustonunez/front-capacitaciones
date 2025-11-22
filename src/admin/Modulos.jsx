@@ -1118,7 +1118,7 @@ function Modulos() {
                         // opcional: abrir detalles al hacer click
                         onClick={() =>
                           window.open(
-                            `http://localhost:3000${archivo.url_archivo}`,
+                            `https://capacitacionback.sistemasudh.com${archivo.url_archivo}`,
                             "_blank"
                           )
                         }
@@ -1167,7 +1167,7 @@ function Modulos() {
 
                         <div className="modulos-video-acciones">
                           <a
-                            href={`http://localhost:3000${archivo.url_archivo}`}
+                            href={`https://capacitacionback.sistemasudh.com${archivo.url_archivo}`}
                             target="_blank"
                             rel="noreferrer"
                             className="modulos-material-descarga"
