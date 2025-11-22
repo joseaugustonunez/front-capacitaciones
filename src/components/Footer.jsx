@@ -1,36 +1,35 @@
-import React from 'react';
-import { 
-  Facebook, 
-  Twitter, 
-  Linkedin, 
-  Youtube, 
-  Mail, 
-  Phone, 
-  GraduationCap
-} from 'lucide-react';
-import '../styles/footer.css';
+import React from "react";
+import {
+  Facebook,
+  Twitter,
+  Linkedin,
+  Youtube,
+  Mail,
+  Phone,
+  GraduationCap,
+} from "lucide-react";
+import "../styles/footer.css";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-container">
-          
           {/* Company Section */}
           <div className="footer-section company">
-             
             <div className="footer-logo">
               <img
-            src="../public/img/logg.png"
-            alt="Logo"
-            className="footer-logo-icon"
-            width={28}
-            height={28}
-          />
-          <h3>EduCORE</h3>
+                src="./img/logg.png"
+                alt="Logo"
+                className="footer-logo-icon"
+                width={28}
+                height={28}
+              />
+              <h3>EduCORE</h3>
             </div>
             <p className="footer-description">
-              Tu plataforma de capacitación líder para impulsar tu desarrollo profesional.
+              Tu plataforma de capacitación líder para impulsar tu desarrollo
+              profesional.
             </p>
           </div>
 
@@ -38,10 +37,18 @@ const Footer = () => {
           <div className="footer-section">
             <h4>Enlaces</h4>
             <ul className="footer-links">
-              <li><a href="#cursos">Cursos</a></li>
-              <li><a href="#certificados">Certificaciones</a></li>
-              <li><a href="#ayuda">Ayuda</a></li>
-              <li><a href="#contacto">Contacto</a></li>
+              <li>
+                <a href="#cursos">Cursos</a>
+              </li>
+              <li>
+                <a href="#certificados">Certificaciones</a>
+              </li>
+              <li>
+                <a href="#ayuda">Ayuda</a>
+              </li>
+              <li>
+                <a href="#contacto">Contacto</a>
+              </li>
             </ul>
           </div>
 
@@ -73,7 +80,6 @@ const Footer = () => {
               </a>
             </div>
           </div>
-
         </div>
       </div>
 

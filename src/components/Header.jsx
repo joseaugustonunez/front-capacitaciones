@@ -19,7 +19,7 @@ import {
   crearNotificacion,
   obtenerNotificacionesPorUsuario,
   marcarNotificacionComoLeida,
-  eliminarNotificacion
+  eliminarNotificacion,
 } from "../api/Notificacion";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -56,51 +56,54 @@ const Header = () => {
   }, [userId]);
 
   useEffect(() => {
-    const currentItem = navigationItems.find(item => location.pathname.startsWith(item.href));
+    const currentItem = navigationItems.find((item) =>
+      location.pathname.startsWith(item.href)
+    );
     if (currentItem) {
       setActiveLink(currentItem.name);
     }
   }, [location.pathname]);
 
-const loadNotifications = async () => {
-  try {
-    setLoadingNotifications(true);
-    const response = await obtenerNotificacionesPorUsuario(userId);
+  const loadNotifications = async () => {
+    try {
+      setLoadingNotifications(true);
+      const response = await obtenerNotificacionesPorUsuario(userId);
 
-    let notificacionesArray = [];
+      let notificacionesArray = [];
 
-    if (Array.isArray(response.data)) {
-      notificacionesArray = response.data;
-    } else if (response.data && typeof response.data === "object") {
-      notificacionesArray = [response.data];
+      if (Array.isArray(response.data)) {
+        notificacionesArray = response.data;
+      } else if (response.data && typeof response.data === "object") {
+        notificacionesArray = [response.data];
+      }
+
+      const notificacionesMapeadas = notificacionesArray.map((notif) => ({
+        _id: notif.id || notif._id,
+        usuarioId: notif.id_usuario,
+        mensaje: notif.mensaje,
+        tipo: notif.tipo,
+        leida: notif.esta_leida === 1 || notif.esta_leida === true,
+        fechaCreacion: notif.fecha_creacion,
+        titulo: notif.titulo,
+      }));
+
+      setNotifications(notificacionesMapeadas);
+    } catch (error) {
+      console.error("Error al cargar notificaciones:", error);
+      setNotifications([]);
+    } finally {
+      setLoadingNotifications(false);
     }
-
-    const notificacionesMapeadas = notificacionesArray.map((notif) => ({
-      _id: notif.id || notif._id,
-      usuarioId: notif.id_usuario,
-      mensaje: notif.mensaje,
-      tipo: notif.tipo,
-      leida: notif.esta_leida === 1 || notif.esta_leida === true,
-      fechaCreacion: notif.fecha_creacion,
-      titulo: notif.titulo,
-    }));
-
-    setNotifications(notificacionesMapeadas);
-  } catch (error) {
-    console.error("Error al cargar notificaciones:", error);
-    setNotifications([]);
-  } finally {
-    setLoadingNotifications(false);
-  }
-};
-
+  };
 
   const markAsRead = async (notificationId) => {
     try {
       await marcarNotificacionComoLeida(notificationId);
-      setNotifications(notifications.map(notif =>
-        notif._id === notificationId ? { ...notif, leida: true } : notif
-      ));
+      setNotifications(
+        notifications.map((notif) =>
+          notif._id === notificationId ? { ...notif, leida: true } : notif
+        )
+      );
     } catch (error) {
       console.error("Error al marcar notificación como leída:", error);
     }
@@ -109,7 +112,9 @@ const loadNotifications = async () => {
   const deleteNotification = async (notificationId) => {
     try {
       await eliminarNotificacion(notificationId);
-      setNotifications(notifications.filter(notif => notif._id !== notificationId));
+      setNotifications(
+        notifications.filter((notif) => notif._id !== notificationId)
+      );
     } catch (error) {
       console.error("Error al eliminar notificación:", error);
     }
@@ -120,7 +125,7 @@ const loadNotifications = async () => {
       const nuevaNotificacion = {
         usuarioId: userId,
         mensaje: "Esta es una notificación de prueba",
-        tipo: "info"
+        tipo: "info",
       };
       await crearNotificacion(nuevaNotificacion);
       loadNotifications();
@@ -131,7 +136,7 @@ const loadNotifications = async () => {
 
   const getUnreadNotificationsCount = () => {
     if (!Array.isArray(notifications)) return 0;
-    return notifications.filter(n => !n.leida).length;
+    return notifications.filter((n) => !n.leida).length;
   };
 
   useEffect(() => {
@@ -212,81 +217,84 @@ const loadNotifications = async () => {
   const navigationItems =
     userRole === "admin"
       ? [
-        {
-          name: "Inicio",
-          href: "/admin",
-          icon: <GraduationCap size={16} />,
-        },
-        {
-          name: "Categorias",
-          href: "/categoria",
-          icon: <GraduationCap size={16} />,
-        },
-        { name: "Cursos", href: "/curso", icon: <User size={16} /> },
-      
-      ]
+          {
+            name: "Inicio",
+            href: "/admin",
+            icon: <GraduationCap size={16} />,
+          },
+          {
+            name: "Categorias",
+            href: "/categoria",
+            icon: <GraduationCap size={16} />,
+          },
+          { name: "Cursos", href: "/curso", icon: <User size={16} /> },
+        ]
       : [
-        {
-          name: "Inicio",
-          href: "/cursos",
-          icon: <GraduationCap size={16} />,
-        },
-        { name: "Mi Progreso", href: "/miscursos", icon: <Award size={16} /> },
-        {
-          name: "Certificados",
-          href: "/certificados",
-          icon: <Award size={16} />,
-        },
-        { name: "Ayuda", href: "/ayuda", icon: <HelpCircle size={16} /> },
-      ];
-const NotificationDropdown = () => (
-  <div className="notification-dropdown">
-    <div className="notification-header">
-      <h3>Notificaciones</h3>
-      <span className="notification-count">{notifications.length}</span>
-    </div>
-    <div className="notification-list">
-      {loadingNotifications ? (
-        <div className="notification-loading">Cargando notificaciones...</div>
-      ) : notifications.length === 0 ? (
-        <div className="notification-empty">No hay notificaciones</div>
-      ) : (
-        notifications.map((notification) => (
-          <div
-            key={notification._id}
-            className={`notification-item ${notification.tipo || "info"} ${
-              notification.leida ? "read" : "unread"
-            }`}
-            onClick={() => markAsRead(notification._id)}
-          >
-            <button
-              className="notification-delete-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteNotification(notification._id);
-              }}
+          {
+            name: "Inicio",
+            href: "/cursos",
+            icon: <GraduationCap size={16} />,
+          },
+          {
+            name: "Mi Progreso",
+            href: "/miscursos",
+            icon: <Award size={16} />,
+          },
+          {
+            name: "Certificados",
+            href: "/certificados",
+            icon: <Award size={16} />,
+          },
+          { name: "Ayuda", href: "/ayuda", icon: <HelpCircle size={16} /> },
+        ];
+  const NotificationDropdown = () => (
+    <div className="notification-dropdown">
+      <div className="notification-header">
+        <h3>Notificaciones</h3>
+        <span className="notification-count">{notifications.length}</span>
+      </div>
+      <div className="notification-list">
+        {loadingNotifications ? (
+          <div className="notification-loading">Cargando notificaciones...</div>
+        ) : notifications.length === 0 ? (
+          <div className="notification-empty">No hay notificaciones</div>
+        ) : (
+          notifications.map((notification) => (
+            <div
+              key={notification._id}
+              className={`notification-item ${notification.tipo || "info"} ${
+                notification.leida ? "read" : "unread"
+              }`}
+              onClick={() => markAsRead(notification._id)}
             >
-              ✖
-            </button>
+              <button
+                className="notification-delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteNotification(notification._id);
+                }}
+              >
+                ✖
+              </button>
 
-            <div className="notification-content">
-              {notification.titulo && <h4>{notification.titulo}</h4>}
-              <p>{notification.mensaje || "Notificación sin mensaje"}</p>
-              <span className="notification-time">
-                {notification.fechaCreacion
-                  ? new Date(notification.fechaCreacion).toLocaleDateString()
-                  : "Fecha no disponible"}
-              </span>
+              <div className="notification-content">
+                {notification.titulo && <h4>{notification.titulo}</h4>}
+                <p>{notification.mensaje || "Notificación sin mensaje"}</p>
+                <span className="notification-time">
+                  {notification.fechaCreacion
+                    ? new Date(notification.fechaCreacion).toLocaleDateString()
+                    : "Fecha no disponible"}
+                </span>
+              </div>
             </div>
-          </div>
-        ))
-      )}
+          ))
+        )}
+      </div>
+      <div className="notification-footer">
+        <button className="view-all-btn">Ver todas</button>
+      </div>
     </div>
-    <div className="notification-footer">
-      <button className="view-all-btn">Ver todas</button>
-    </div>
-  </div>
-);
+  );
 
   const ProfileDropdown = () => (
     <div className="profile-dropdown">
@@ -318,7 +326,7 @@ const NotificationDropdown = () => (
       <div className="header-container">
         <div className="logo">
           <img
-            src="../public/img/logg.png"
+            src="./img/logg.png"
             alt="Logo"
             className="logo-icon"
             width={28}
@@ -333,7 +341,9 @@ const NotificationDropdown = () => (
               <li key={item.name}>
                 <a
                   href={item.href}
-                  className={`nav-link ${location.pathname.startsWith(item.href) ? "active" : ""}`}
+                  className={`nav-link ${
+                    location.pathname.startsWith(item.href) ? "active" : ""
+                  }`}
                   onClick={() => handleLinkClick(item.name)}
                 >
                   <span className="nav-icon">{item.icon}</span>
