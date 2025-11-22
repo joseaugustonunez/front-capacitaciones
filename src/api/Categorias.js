@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const API_URL = '/api/categorias';
+const API_URL = `${backendUrl}/api/categorias`;
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 export const obtenerCategorias = async () => {
   const response = await axios.get(API_URL);
   return response.data;

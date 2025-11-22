@@ -1,5 +1,6 @@
 
-const API_URL = '/api/cursos';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = `${backendUrl}/api/cursos`;
 
 export const obtenerVideosPorCurso = async (idCurso) => {
   const res = await axios.get(`${API_URL}/${idCurso}/videos`);

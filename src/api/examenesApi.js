@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_URL = '/api/examenes';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = `${backendUrl}/api/examenes`;
 
 // === EXÁMENES ===
 export const obtenerExamenes = async () => {

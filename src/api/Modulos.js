@@ -1,5 +1,7 @@
 
-const API_URL = '/api/modulos';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
+const API_URL = `${backendUrl}/api/modulos`;
 
 const manejarRespuesta = async (response) => {
   if (!response.ok) {

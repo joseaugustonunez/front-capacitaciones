@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_URL = '/api/estadisticas';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = `${backendUrl}/api/estadisticas`;
 
 // Totales generales (sin filtros)
 export const obtenerTotales = async () => {

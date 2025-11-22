@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "/api/certificados";
-
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const API_URL = `${backendUrl}/api/certificados`;
 export const obtenerCertificadosUsuario = async (idUsuario) => {
   try {
     const response = await axios.get(`${API_URL}/usuario/${idUsuario}`);

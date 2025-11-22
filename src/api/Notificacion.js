@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = '/api/notificaciones';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+
+const API_URL = `${backendUrl}/api/notificaciones`;
 
 export const crearNotificacion = async (datos) => {
   const response = await axios.post(API_URL, datos);

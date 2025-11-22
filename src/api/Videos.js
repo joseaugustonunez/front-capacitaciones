@@ -1,5 +1,6 @@
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
-const API_URL = '/api/videos';
+const API_URL = `${backendUrl}/api/videos`;
 
 
 const manejarRespuesta = async (response) => {

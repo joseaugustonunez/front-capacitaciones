@@ -1,6 +1,7 @@
 import axios from 'axios';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
-const API_URL = '/api/tipos-interaccion';
+const API_URL = `${backendUrl}/api/tipos-interaccion`;
 
 export const obtenerTiposInteraccion = async () => {
   const response = await axios.get(API_URL);
