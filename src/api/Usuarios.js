@@ -9,6 +9,10 @@ export const registrarUsuario = async (datos) => {
 };
 
 export const loginUsuario = async (datos) => {
+  console.log('URL completa:', `${API_URL}/login`);
+  console.log('Datos enviados:', datos);
+  console.log('Backend URL:', backendUrl);
+  
   const response = await axios.post(`${API_URL}/login`, datos);
   return response.data;
 };
