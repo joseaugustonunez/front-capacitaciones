@@ -13,21 +13,13 @@ import {
 
 const tipoMap = {
   1: { icon: CheckSquare, color: "#84CC16", nombre: "Opción Múltiple" },
-  2: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
+  2: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
   3: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
-  4: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
-  5: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
-  6: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
-  7: { icon: Star, color: "#F97316", nombre: "Calificación" },
-  8: { icon: Users, color: "#10B981", nombre: "Votación" },
-};
-const TIPOS_INTERACCION = {
-  1: "cuestionario",
-  2: "completar_espacios",
-  3: "arrastrar_soltar",
-  4: "entrada_texto",
-  5: "calificacion",
-  6: "votacion",
+  4: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
+  5: { icon: Star, color: "#F97316", nombre: "Calificación" },
+  6: { icon: Users, color: "#10B981", nombre: "Votación" },
+  7: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
+  8: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
 };
 const Timeline = ({
   contenidos,

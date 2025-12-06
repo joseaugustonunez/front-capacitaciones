@@ -1,52 +1,66 @@
 import React from "react";
-import { 
-  Target, Edit3, Eye, EyeOff, Trash2, AlertTriangle, Loader2, 
-  CheckSquare, BarChart, Type, MousePointer, Star, Vote, 
-  AlignLeft, MessageSquare, Users
+import {
+  Target,
+  Edit3,
+  Eye,
+  EyeOff,
+  Trash2,
+  AlertTriangle,
+  Loader2,
+  CheckSquare,
+  BarChart,
+  Type,
+  MousePointer,
+  Star,
+  Vote,
+  AlignLeft,
+  MessageSquare,
+  Users,
 } from "lucide-react";
 
 const colorMap = {
   1: { icon: CheckSquare, color: "#84CC16", nombre: "Opción Múltiple" },
-  2: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
-  3: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
-  4: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
-  5: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
-  6: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
-  7: { icon: Star, color: "#F97316", nombre: "Calificación" },
-  8: { icon: Users, color: "#10B981", nombre: "Votación" },
+  2: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
+  3: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
+  4: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
+  5: { icon: Users, color: "#10B981", nombre: "Votación" },
+  6: { icon: Star, color: "#F97316", nombre: "Calificación" },
+  7: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
+  8: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
 };
 
-const Sidebar = ({ 
-  contenidos, 
-  stats, 
-  loadingContenidos, 
-  editarContenido, 
-  toggleEstadoContenido, 
-  eliminarInteraccion, 
-  loading, 
+const Sidebar = ({
+  contenidos,
+  stats,
+  loadingContenidos,
+  editarContenido,
+  toggleEstadoContenido,
+  eliminarInteraccion,
+  loading,
   formatTime,
-  tiposInteraccion
+  tiposInteraccion,
 }) => {
-  
   const obtenerTipoPorId = (idTipo) => {
     const tipoPorId = colorMap[idTipo];
     if (tipoPorId) return tipoPorId;
-    
+
     if (tiposInteraccion && tiposInteraccion.length > 0) {
-      const tipoEncontrado = tiposInteraccion.find(tipo => tipo.id === idTipo);
+      const tipoEncontrado = tiposInteraccion.find(
+        (tipo) => tipo.id === idTipo
+      );
       if (tipoEncontrado) {
         return {
           icon: CheckSquare,
           color: "#6B7280",
-          nombre: tipoEncontrado.nombre || `Tipo ${idTipo}`
+          nombre: tipoEncontrado.nombre || `Tipo ${idTipo}`,
         };
       }
     }
-    
+
     return {
       icon: Target,
       color: "#6B7280",
-      nombre: `Tipo ${idTipo}`
+      nombre: `Tipo ${idTipo}`,
     };
   };
 
@@ -81,7 +95,10 @@ const Sidebar = ({
           </div>
         ) : contenidos.length > 0 ? (
           contenidos
-            .sort((a, b) => a.tiempo_activacion_segundos - b.tiempo_activacion_segundos)
+            .sort(
+              (a, b) =>
+                a.tiempo_activacion_segundos - b.tiempo_activacion_segundos
+            )
             .map((contenido) => {
               const tipoInfo = obtenerTipoPorId(contenido.id_tipo_interaccion);
               const IconoTipo = tipoInfo.icon;
@@ -89,7 +106,9 @@ const Sidebar = ({
               return (
                 <div
                   key={contenido.id}
-                  className={`contenido-item-con ${!contenido.esta_activo ? "inactive" : ""}`}
+                  className={`contenido-item-con ${
+                    !contenido.esta_activo ? "inactive" : ""
+                  }`}
                   style={{ borderLeftColor: tipoInfo.color }}
                   onClick={() => editarContenido(contenido)}
                 >
@@ -102,7 +121,9 @@ const Sidebar = ({
                       <AlertTriangle size={12} color="#EF4444" />
                     )}
                   </div>
-                  <h4 className="contenido-titulo">{contenido.titulo || "Sin título"}</h4>
+                  <h4 className="contenido-titulo">
+                    {contenido.titulo || "Sin título"}
+                  </h4>
                   <div className="contenido-meta">
                     <span>{tipoInfo.nombre}</span>
                     <span>{contenido.puntos || 0} pts</span>
@@ -112,7 +133,7 @@ const Sidebar = ({
                     className="contenido-actions"
                     onClick={(e) => e.stopPropagation()}
                   >
-                   <button
+                    <button
                       className="btn-small"
                       onClick={() => editarContenido(contenido)}
                       disabled={loading}
@@ -121,7 +142,9 @@ const Sidebar = ({
                       Editar
                     </button>
                     <button
-                      className={`btn-small ${contenido.esta_activo ? "btn-warning" : "btn-success"}`}
+                      className={`btn-small ${
+                        contenido.esta_activo ? "btn-warning" : "btn-success"
+                      }`}
                       onClick={() => toggleEstadoContenido(contenido)}
                       disabled={loading}
                     >
@@ -131,7 +154,7 @@ const Sidebar = ({
                         <Eye size={12} />
                       )}
                       {contenido.esta_activo ? "Desactivar" : "Activar"}
-                    </button> 
+                    </button>
                     <button
                       className="btn-small btn-danger"
                       onClick={() => eliminarInteraccion(contenido.id)}
