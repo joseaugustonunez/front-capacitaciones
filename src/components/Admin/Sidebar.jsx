@@ -23,8 +23,8 @@ const colorMap = {
   2: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
   3: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
   4: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
-  5: { icon: Users, color: "#10B981", nombre: "Votación" },
-  6: { icon: Star, color: "#F97316", nombre: "Calificación" },
+  5: { icon: Star, color: "#F97316", nombre: "Calificación" },
+  6: { icon: Users, color: "#10B981", nombre: "Votación" },
   7: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
   8: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
 };
