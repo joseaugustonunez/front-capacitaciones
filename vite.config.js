@@ -5,11 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      },
+    '/api': {
+      target: 'http://localhost:3000',
+      changeOrigin: true,
     },
+  },
   },
   build: {
     minify: false,  // 🔹 temporal para depurar

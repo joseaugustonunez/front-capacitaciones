@@ -42,7 +42,7 @@ const VideoPlayer = forwardRef(
     const [localIsMuted, setLocalIsMuted] = useState(isMuted);
     const [localPlaybackRate, setLocalPlaybackRate] = useState(playbackRate);
     const [localIsFullscreen, setLocalIsFullscreen] = useState(isFullscreen);
-
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const handleSeekTo = (time) => {
       const safeTime = Math.max(0, Math.min(time, duration || 0));
 
@@ -265,7 +265,7 @@ const VideoPlayer = forwardRef(
               src={
                 urlVideo?.startsWith("http")
                   ? urlVideo
-                  : `https://capacitacionback.sistemasudh.com${urlVideo}`
+                  : `${backendUrl}${urlVideo}`
               }
               onTimeUpdate={handleTimeUpdate}
               onLoadedMetadata={handleLoadedMetadata}

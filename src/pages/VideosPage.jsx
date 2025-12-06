@@ -60,6 +60,7 @@ const VideosPage = () => {
     targetTime: null,
     showMessage: false,
   });
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -533,8 +534,8 @@ const VideosPage = () => {
               current: video.id == lessonId,
               videoUrl: video.url_video?.startsWith("http")
                 ? video.url_video
-                : `https://capacitacionback.sistemasudh.com${video.url_video}`,
-              thumbnailUrl: `https://capacitacionback.sistemasudh.com${video.url_miniatura}`,
+                : `${backendUrl}${video.url_video}`,
+              thumbnailUrl: `${backendUrl}${video.url_miniatura}`,
               transcription: video.transcripcion,
               isPreview: video.es_vista_previa,
               order: video.indice_orden || index + 1,

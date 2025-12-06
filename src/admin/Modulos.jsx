@@ -87,7 +87,7 @@ function Modulos() {
   const [examenesModulos, setExamenesModulos] = useState({}); // ⬅️ estado para exámenes por módulo
   const [videosExternos, setVideosExternos] = useState([]);
   const [videoSeleccionado, setVideoSeleccionado] = useState("");
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     const fetchCurso = async () => {
       try {
@@ -940,7 +940,7 @@ function Modulos() {
       <div className="modulos-curso-card">
         <div className="modulos-curso-header">
           <img
-            src={`https://capacitacionback.sistemasudh.com${curso.url_miniatura}`}
+            src={`${backendUrl}${curso.url_miniatura}`}
             alt={curso.titulo}
             className="modulos-curso-imagen"
           />
@@ -1118,7 +1118,7 @@ function Modulos() {
                         // opcional: abrir detalles al hacer click
                         onClick={() =>
                           window.open(
-                            `https://capacitacionback.sistemasudh.com${archivo.url_archivo}`,
+                            `${backendUrl}${archivo.url_archivo}`,
                             "_blank"
                           )
                         }
@@ -1167,7 +1167,7 @@ function Modulos() {
 
                         <div className="modulos-video-acciones">
                           <a
-                            href={`https://capacitacionback.sistemasudh.com${archivo.url_archivo}`}
+                            href={`${backendUrl}${archivo.url_archivo}`}
                             target="_blank"
                             rel="noreferrer"
                             className="modulos-material-descarga"

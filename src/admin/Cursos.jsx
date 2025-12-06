@@ -61,7 +61,7 @@ const Cursos = () => {
     estado: "",
     instructor: "",
   });
-
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
   useEffect(() => {
     cargarDatos();
   }, []);
@@ -639,7 +639,7 @@ const Cursos = () => {
                   <div className="card-image">
                     {curso.url_miniatura ? (
                       <img
-                        src={`https://capacitacionback.sistemasudh.com${curso.url_miniatura}`}
+                        src={`${backendUrl}${curso.url_miniatura}`}
                         alt={curso.titulo}
                         onError={(e) => {
                           e.target.style.display = "none";

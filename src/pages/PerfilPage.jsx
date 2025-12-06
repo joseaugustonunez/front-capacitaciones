@@ -72,7 +72,7 @@ const UserProfile = () => {
           instructor: curso.instructor_nombre || "Instructor no disponible",
           thumbnail: curso.url_miniatura.startsWith("http")
             ? curso.url_miniatura
-            : `https://capacitacionback.sistemasudh.com${curso.url_miniatura}`,
+            : `${backendUrl}${curso.url_miniatura}`,
           duration: `${curso.duracion_horas}h`,
           category: curso.categoria_nombre || "Sin categoría",
           views: curso.vistas || "0",
@@ -281,12 +281,12 @@ const UserProfile = () => {
       if (response && response.url_avatar) {
         setEditForm((prev) => ({
           ...prev,
-          url_avatar: `https://capacitacionback.sistemasudh.com${response.url_avatar}`,
+          url_avatar: `${backendUrl}${response.url_avatar}`,
         }));
 
         const updatedUser = {
           ...user,
-          url_avatar: `https://capacitacionback.sistemasudh.com${response.url_avatar}`,
+          url_avatar: `${backendUrl}${response.url_avatar}`,
         };
         localStorage.setItem("userData", JSON.stringify(updatedUser));
 
@@ -311,7 +311,7 @@ const UserProfile = () => {
     if (userData?.url_avatar) {
       return userData.url_avatar.startsWith("http")
         ? userData.url_avatar
-        : `https://capacitacionback.sistemasudh.com/${userData.url_avatar}`;
+        : `${backendUrl}${userData.url_avatar}`;
     }
     return "/img/perfil.png";
   };

@@ -1,57 +1,69 @@
-
 import React, { useRef } from "react";
-import { 
-  Target, CheckSquare, BarChart, Type, MousePointer, 
-  MessageSquare, Star, Users, AlignLeft
+import {
+  Target,
+  CheckSquare,
+  BarChart,
+  Type,
+  MousePointer,
+  MessageSquare,
+  Star,
+  Users,
+  AlignLeft,
 } from "lucide-react";
-
 
 const tipoMap = {
   1: { icon: CheckSquare, color: "#84CC16", nombre: "Opción Múltiple" },
   2: { icon: BarChart, color: "#10B981", nombre: "Encuesta" },
-  3: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
-  4: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
+  3: { icon: MousePointer, color: "#8B5CF6", nombre: "Arrastrar y Soltar" },
+  4: { icon: AlignLeft, color: "#3B82F6", nombre: "Completar Espacios" },
   5: { icon: Target, color: "#EF4444", nombre: "Puntos de Interacción" },
   6: { icon: Type, color: "#EF4444", nombre: "Entrada de Texto" },
   7: { icon: Star, color: "#F97316", nombre: "Calificación" },
   8: { icon: Users, color: "#10B981", nombre: "Votación" },
 };
-
-const Timeline = ({ 
-  contenidos, 
-  duration, 
-  currentTime, 
-  seekTo, 
-  agregarInteraccionEnTiempo, 
-  editarContenido, 
-  interaccionesCompletadas, 
+const TIPOS_INTERACCION = {
+  1: "cuestionario",
+  2: "completar_espacios",
+  3: "arrastrar_soltar",
+  4: "entrada_texto",
+  5: "calificacion",
+  6: "votacion",
+};
+const Timeline = ({
+  contenidos,
+  duration,
+  currentTime,
+  seekTo,
+  agregarInteraccionEnTiempo,
+  editarContenido,
+  interaccionesCompletadas,
   formatTime,
-  tiposInteraccion 
+  tiposInteraccion,
 }) => {
   const timelineRef = useRef(null);
 
-  
   const obtenerTipoPorId = (idTipo) => {
-   
     const tipoLocal = tipoMap[idTipo];
     if (tipoLocal) return tipoLocal;
-    
+
     if (tiposInteraccion && tiposInteraccion.length > 0) {
-      const tipoEncontrado = tiposInteraccion.find(tipo => tipo.id === idTipo);
+      const tipoEncontrado = tiposInteraccion.find(
+        (tipo) => tipo.id === idTipo
+      );
       if (tipoEncontrado) {
         const icono = tipoMap[tipoEncontrado.id]?.icon || Target;
         return {
           icon: icono,
           color: tipoEncontrado.color || "#6B7280",
-          nombre: tipoEncontrado.nombre || `Tipo ${idTipo}`
+          nombre: tipoEncontrado.nombre || `Tipo ${idTipo}`,
         };
       }
     }
-    
+
     return {
       icon: Target,
       color: "#6B7280",
-      nombre: `Tipo ${idTipo}`
+      nombre: `Tipo ${idTipo}`,
     };
   };
 
@@ -69,7 +81,8 @@ const Timeline = ({
               className="progress-handle"
               style={{ left: `${(currentTime / duration) * 100}%` }}
               onMouseDown={(e) => {
-                const rect = e.currentTarget.parentElement.getBoundingClientRect();
+                const rect =
+                  e.currentTarget.parentElement.getBoundingClientRect();
                 const handleMouseMove = (e) => {
                   const x = e.clientX - rect.left;
                   const percentage = Math.max(0, Math.min(1, x / rect.width));
@@ -97,17 +110,25 @@ const Timeline = ({
           </div>
           <div className="interactions-track">
             {[...contenidos]
-              .sort((a, b) => a.tiempo_activacion_segundos - b.tiempo_activacion_segundos)
+              .sort(
+                (a, b) =>
+                  a.tiempo_activacion_segundos - b.tiempo_activacion_segundos
+              )
               .map((contenido) => {
                 const tipo = obtenerTipoPorId(contenido.id_tipo_interaccion);
                 const IconoTipo = tipo.icon;
-                const position = (contenido.tiempo_activacion_segundos / duration) * 100;
-                const estaCompletada = interaccionesCompletadas.has(contenido.id);
+                const position =
+                  (contenido.tiempo_activacion_segundos / duration) * 100;
+                const estaCompletada = interaccionesCompletadas.has(
+                  contenido.id
+                );
 
                 return (
                   <div
                     key={contenido.id}
-                    className={`interaction-marker ${!contenido.esta_activo ? "inactive" : ""} ${estaCompletada ? "completed" : ""}`}
+                    className={`interaction-marker ${
+                      !contenido.esta_activo ? "inactive" : ""
+                    } ${estaCompletada ? "completed" : ""}`}
                     style={{
                       left: `${position}%`,
                       backgroundColor: tipo.color,
@@ -117,7 +138,9 @@ const Timeline = ({
                       seekTo(contenido.tiempo_activacion_segundos);
                       editarContenido(contenido);
                     }}
-                    title={`${contenido.titulo} - ${tipo.nombre} - ${formatTime(contenido.tiempo_activacion_segundos)} ${estaCompletada ? "(Completada)" : ""}`}
+                    title={`${contenido.titulo} - ${tipo.nombre} - ${formatTime(
+                      contenido.tiempo_activacion_segundos
+                    )} ${estaCompletada ? "(Completada)" : ""}`}
                   >
                     <IconoTipo size={12} color="#ffffff" />
                     {contenido.es_obligatorio && (
@@ -142,10 +165,10 @@ const Timeline = ({
           />
         </div>
       </div>
-      
-      
+
       <div className="timeline-help">
-        Haz clic en cualquier punto del timeline para agregar una nueva interacción
+        Haz clic en cualquier punto del timeline para agregar una nueva
+        interacción
       </div>
     </div>
   );
