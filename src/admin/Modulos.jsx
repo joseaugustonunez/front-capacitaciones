@@ -113,7 +113,10 @@ function Modulos() {
     const cargarVideosExternos = async () => {
       try {
         const data = await obtenerVideosExternos();
-        setVideosExternos(data?.data || []);
+        // La API puede devolver directamente un array o un objeto { data: [...] }.
+        // Normalizamos a un array para evitar que la UI quede vacía por diferencias en la respuesta.
+        const lista = Array.isArray(data) ? data : data?.data || [];
+        setVideosExternos(lista);
       } catch (error) {
         console.error("Error al cargar videos externos:", error);
         setVideosExternos([]);
@@ -548,8 +551,21 @@ function Modulos() {
           (v) => v.uuid === videoSeleccionado
         );
         if (videoExterno) {
-          formData.append("url_video", videoExterno.link); // <-- depende de tu API, puede ser videoExterno.link
-          formData.append("url_miniatura", videoExterno.miniatura || ""); // opcional
+          // La estructura del objeto puede variar (link, url, video_url, media_url, etc.).
+          const urlVideo =
+            videoExterno.link ||
+            videoExterno.url ||
+            videoExterno.video_url ||
+            videoExterno.media_url ||
+            "";
+          const miniatura =
+            videoExterno.miniatura ||
+            videoExterno.thumbnail ||
+            videoExterno.imagen ||
+            videoExterno.thumb ||
+            "";
+          formData.append("url_video", urlVideo);
+          if (miniatura) formData.append("url_miniatura", miniatura);
         }
       }
 
