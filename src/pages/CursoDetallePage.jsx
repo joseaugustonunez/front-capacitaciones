@@ -359,6 +359,99 @@ export default function CursoDetallePage({ onLessonStart }) {
       }
       setMaterialesPorModulo(matMap);
       setExamenesPorModulo(examMap);
+      try {
+        if (courseData && Array.isArray(courseData.modules)) {
+          const updatedModules = courseData.modules.map((mod, idx) => {
+            if (idx === 0) {
+              const porcentaje = moduleProgress.get(mod.id) || 0;
+              const modCompleted = porcentaje >= 100;
+              return {
+                ...mod,
+                locked: false,
+                progress: porcentaje,
+                completed: modCompleted,
+                lessons: mod.lessons.map((l) => ({
+                  ...l,
+                  completed: modCompleted,
+                })),
+              };
+            }
+
+            const previousModule = courseData.modules[idx - 1];
+            const previousProgress = moduleProgress.get(previousModule.id) || 0;
+
+            const prevExams = examMap[previousModule.id] || [];
+
+            let shouldBeUnlocked = false;
+            if (prevExams.length > 0) {
+              const obligatoryExams = prevExams.filter(
+                (e) =>
+                  Number(e.es_obligatorio) === 1 || e.es_obligatorio === true
+              );
+
+              if (obligatoryExams.length > 0) {
+                // Requerir nota mínima en todos los obligatorios
+                const allPassed = obligatoryExams.every((e) => {
+                  const best = e.user_best_score;
+                  const min = Number(e.puntaje_minimo_aprobacion ?? 0);
+                  return (
+                    best !== null && best !== undefined && Number(best) >= min
+                  );
+                });
+                shouldBeUnlocked = allPassed;
+              } else {
+                // No hay obligatorios pero sí exámenes: requerir al menos un intento
+                const anyAttempt = prevExams.some(
+                  (e) =>
+                    Number(e.user_intentos_count ?? 0) > 0 ||
+                    (e.user_best_score !== null &&
+                      e.user_best_score !== undefined)
+                );
+                shouldBeUnlocked = anyAttempt;
+              }
+            } else {
+              // No hay exámenes en el módulo previo: usar progreso
+              shouldBeUnlocked = previousProgress >= 100;
+            }
+
+            const porcentaje = moduleProgress.get(mod.id) || 0;
+            const modCompleted = porcentaje >= 100;
+            return {
+              ...mod,
+              locked: !shouldBeUnlocked,
+              progress: porcentaje,
+              completed: modCompleted,
+              lessons: mod.lessons.map((l) => ({
+                ...l,
+                completed: modCompleted,
+              })),
+            };
+          });
+
+          // Evitar re-render infinito: comparar flags clave antes de setState
+          const prevSimple = courseData.modules.map((m) => ({
+            id: m.id,
+            locked: !!m.locked,
+            progress: m.progress || 0,
+            completed: !!m.completed,
+          }));
+          const nextSimple = updatedModules.map((m) => ({
+            id: m.id,
+            locked: !!m.locked,
+            progress: m.progress || 0,
+            completed: !!m.completed,
+          }));
+          const equal =
+            JSON.stringify(prevSimple) === JSON.stringify(nextSimple);
+          if (!equal) {
+            setCourseData((prev) => ({ ...prev, modules: updatedModules }));
+            const firstUnlockedModule = updatedModules.find((m) => !m.locked);
+            if (firstUnlockedModule) setExpandedModule(firstUnlockedModule.id);
+          }
+        }
+      } catch (err) {
+        console.warn("Error calculando desbloqueo por nota mínima:", err);
+      }
     };
 
     cargarRecursos();
@@ -869,76 +962,120 @@ export default function CursoDetallePage({ onLessonStart }) {
                                       className="lessons-container"
                                       style={{ padding: 0 }}
                                     >
-                                      {exams.map((exam, i) => (
-                                        <div
-                                          key={exam.id || `exam-${i}`}
-                                          className="lesson-item resource-card exam-card"
-                                          title="Iniciar cuestionario"
-                                          role="button"
-                                          tabIndex={0}
-                                          onClick={() => handleStartExam(exam)}
-                                          onKeyDown={(e) => {
-                                            if (
-                                              e.key === "Enter" ||
-                                              e.key === " "
-                                            ) {
-                                              e.preventDefault();
-                                              handleStartExam(exam);
+                                      {exams.map((exam, i) => {
+                                        const moduleCompleted =
+                                          getModuleProgress(module) >= 100;
+                                        return (
+                                          <div
+                                            key={exam.id || `exam-${i}`}
+                                            className={`lesson-item resource-card exam-card ${
+                                              moduleCompleted ? "" : "disabled"
+                                            }`}
+                                            title={
+                                              moduleCompleted
+                                                ? "Iniciar cuestionario"
+                                                : "Completa el módulo para habilitar el examen"
                                             }
-                                          }}
-                                        >
-                                          <div className="lesson-info">
-                                            <div className="lesson-number default">
-                                              <Clipboard size={16} />
-                                            </div>
+                                            role={
+                                              moduleCompleted
+                                                ? "button"
+                                                : "presentation"
+                                            }
+                                            tabIndex={moduleCompleted ? 0 : -1}
+                                            onClick={() => {
+                                              if (moduleCompleted)
+                                                return handleStartExam(exam);
+                                              toast.error(
+                                                "Completa el módulo (último video) para habilitar este examen"
+                                              );
+                                            }}
+                                            onKeyDown={(e) => {
+                                              if (!moduleCompleted) return;
+                                              if (
+                                                e.key === "Enter" ||
+                                                e.key === " "
+                                              ) {
+                                                e.preventDefault();
+                                                handleStartExam(exam);
+                                              }
+                                            }}
+                                          >
+                                            <div className="lesson-info">
+                                              <div className="lesson-number default">
+                                                <Clipboard size={16} />
+                                              </div>
 
-                                            <div className="lesson-details">
-                                              <h4>
-                                                {exam.titulo ||
-                                                  `Cuestionario ${i + 1}`}
-                                              </h4>
-                                              <div className="lesson-meta">
-                                                <div className="lesson-meta-item">
-                                                  Intentos permitidos:{" "}
-                                                  {exam.intentos_permitidos ??
-                                                    1}
-                                                </div>
-                                                <div className="lesson-meta-item">
-                                                  Tus intentos:{" "}
-                                                  {exam.user_intentos_count ??
-                                                    0}
-                                                </div>
-                                                <div className="lesson-meta-item">
-                                                  Mejor nota:{" "}
-                                                  {exam.user_best_score !== null
-                                                    ? `${exam.user_best_score}%`
-                                                    : "—"}
-                                                </div>
-                                                {exam.tiempo_minutos && (
+                                              <div className="lesson-details">
+                                                <h4>
+                                                  {exam.titulo ||
+                                                    `Cuestionario ${i + 1}`}
+                                                </h4>
+                                                <div className="lesson-meta">
                                                   <div className="lesson-meta-item">
-                                                    • {exam.tiempo_minutos} min
+                                                    Intentos permitidos:{" "}
+                                                    {exam.intentos_permitidos ??
+                                                      1}
                                                   </div>
-                                                )}
+                                                  <div className="lesson-meta-item">
+                                                    Tus intentos:{" "}
+                                                    {exam.user_intentos_count ??
+                                                      0}
+                                                  </div>
+                                                  <div className="lesson-meta-item">
+                                                    Mejor nota:{" "}
+                                                    {exam.user_best_score !==
+                                                    null
+                                                      ? `${Number(
+                                                          exam.user_best_score
+                                                        ).toFixed(2)}`
+                                                      : "—"}
+                                                  </div>
+                                                  {exam.tiempo_minutos && (
+                                                    <div className="lesson-meta-item">
+                                                      • {exam.tiempo_minutos}{" "}
+                                                      min
+                                                    </div>
+                                                  )}
+                                                  {!moduleCompleted && (
+                                                    <div
+                                                      className="lesson-meta-item"
+                                                      style={{
+                                                        color: "#f59e0b",
+                                                      }}
+                                                    >
+                                                      Completa el módulo para
+                                                      habilitar este examen
+                                                    </div>
+                                                  )}
+                                                </div>
                                               </div>
                                             </div>
-                                          </div>
 
-                                          <div
-                                            className="lesson-actions"
-                                            onClick={(e) => e.stopPropagation()}
-                                          >
-                                            <button
-                                              className="lesson-button primary"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleStartExam(exam);
-                                              }}
+                                            <div
+                                              className="lesson-actions"
+                                              onClick={(e) =>
+                                                e.stopPropagation()
+                                              }
                                             >
-                                              Iniciar
-                                            </button>
+                                              <button
+                                                className="lesson-button primary"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  if (moduleCompleted)
+                                                    handleStartExam(exam);
+                                                  else
+                                                    toast.error(
+                                                      "Completa el módulo (último video) para habilitar este examen"
+                                                    );
+                                                }}
+                                                disabled={!moduleCompleted}
+                                              >
+                                                Iniciar
+                                              </button>
+                                            </div>
                                           </div>
-                                        </div>
-                                      ))}
+                                        );
+                                      })}
                                     </div>
                                   </div>
                                 </>

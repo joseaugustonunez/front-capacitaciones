@@ -218,7 +218,7 @@ const RegistroComponent = () => {
                     onChange={handleInputChange}
                     placeholder="Ingresa tu DNI"
                     maxLength={8}
-                    pattern="\d{8}"
+                    inputMode="numeric"
                     required
                   />
                 </div>

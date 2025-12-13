@@ -160,9 +160,16 @@ export default function ExamenPage() {
 
     setSubmitting(true);
     try {
-      // Calcular correctas comparando id de opción seleccionada con campo es_correcta
+      // Calcular correctas, puntaje obtenido por pregunta y puntaje máximo
       let correct = 0;
+      let puntosObtenidos = 0;
+      let puntosMaximos = 0;
+
       preguntas.forEach((p) => {
+        const puntajePregunta =
+          typeof p.puntaje !== "undefined" ? Number(p.puntaje) : 1;
+        puntosMaximos += puntajePregunta;
+
         const selectedOptionId = answers[p.id];
         if (!selectedOptionId) return;
         const opciones = p.opciones || [];
@@ -177,13 +184,18 @@ export default function ExamenPage() {
             selected?.correcta === 1 ||
             selected?.correcta === true ||
             selected?.is_correct === true;
-          if (isCorrect) correct++;
+          if (isCorrect) {
+            correct++;
+            puntosObtenidos += puntajePregunta;
+          }
         }
       });
 
       const total = preguntas.length;
-      const percent = total ? Math.round((correct / total) * 100) : 0;
-      setResult({ correct, total, percent });
+      const percent = puntosMaximos
+        ? Math.round((puntosObtenidos / puntosMaximos) * 100)
+        : 0;
+      setResult({ correct, total, percent, puntosObtenidos, puntosMaximos });
 
       try {
         // intentar obtener id de usuario desde localStorage (si aplica)
@@ -225,7 +237,11 @@ export default function ExamenPage() {
 
           const intentoPayload = {
             id_examen: Number(id),
-            puntaje_total: percent,
+            // Guardar puntaje en puntos (suma de puntajes por pregunta)
+            puntaje_total:
+              typeof puntosObtenidos !== "undefined"
+                ? Number(puntosObtenidos)
+                : 0,
             id_usuario,
           };
           await registrarIntento(intentoPayload).catch(() => null);
@@ -339,7 +355,9 @@ export default function ExamenPage() {
                 <div className="stat-info">
                   <span className="stat-label">Mejor Puntaje</span>
                   <span className="stat-value">
-                    {mejorPuntaje !== null ? `${mejorPuntaje}%` : "—"}
+                    {mejorPuntaje !== null
+                      ? Number(mejorPuntaje).toFixed(2)
+                      : "—"}
                   </span>
                 </div>
               </div>
@@ -516,6 +534,15 @@ export default function ExamenPage() {
                   {formatTime(timeElapsed)}
                 </span>
               </div>
+
+              <div className="result-stat">
+                <span className="result-stat-label">Puntaje obtenido</span>
+                <span className="result-stat-value">
+                  {typeof result.puntosObtenidos !== "undefined"
+                    ? `${result.puntosObtenidos} / ${result.puntosMaximos}`
+                    : "-"}
+                </span>
+              </div>
             </div>
 
             {/* Listado de intentos previos */}
@@ -551,7 +578,7 @@ export default function ExamenPage() {
                           </div>
                         </div>
                         <div style={{ fontWeight: 700 }}>
-                          {it.puntaje_total ?? it.puntaje ?? 0}%
+                          {it.puntaje_total ?? it.puntaje ?? 0}
                         </div>
                       </div>
                     ))}

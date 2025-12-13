@@ -190,6 +190,7 @@ function Modulos() {
             idTemp: p.id,
             id: p.id,
             texto: p.texto,
+            puntaje: typeof p.puntaje !== "undefined" ? Number(p.puntaje) : 1,
             opciones: (opciones || []).map((o) => ({
               idTempOpt: o.id,
               id: o.id,
@@ -207,6 +208,11 @@ function Modulos() {
           titulo: exam.titulo || "",
           id_modulo: exam.id_modulo,
           intentos_permitidos: exam.intentos_permitidos || 1,
+          puntaje_minimo_aprobacion:
+            typeof exam.puntaje_minimo_aprobacion !== "undefined"
+              ? Number(exam.puntaje_minimo_aprobacion)
+              : 0.0,
+          es_obligatorio: !!exam.es_obligatorio,
           opcionesEliminadas: [], // ⬅️ inicializar lista de eliminadas
           preguntas:
             preguntasConOpciones.length > 0
@@ -303,11 +309,14 @@ function Modulos() {
         id_modulo: curso.modulos?.[0]?.id || null, // asigna módulo por defecto
         // Nota: no incluimos indice_orden/tiempo en el payload porque la tabla 'examenes' no los tiene
         intentos_permitidos: 1,
+        puntaje_minimo_aprobacion: 0.0,
+        es_obligatorio: false,
         opcionesEliminadas: [], // ⬅️ inicializar lista de eliminadas
         preguntas: [
           {
             idTemp: Date.now(),
             texto: "",
+            puntaje: 1,
             opciones: [
               { idTempOpt: 1, texto: "", es_correcta: true }, // por defecto la primera es correcta
               { idTempOpt: 2, texto: "", es_correcta: false },
@@ -634,6 +643,11 @@ function Modulos() {
         intentos_permitidos: datos.intentos_permitidos
           ? Number(datos.intentos_permitidos)
           : 1,
+        puntaje_minimo_aprobacion:
+          typeof datos.puntaje_minimo_aprobacion !== "undefined"
+            ? Number(datos.puntaje_minimo_aprobacion)
+            : 0.0,
+        es_obligatorio: datos.es_obligatorio ? 1 : 0,
       };
 
       // Si es edición, actualizar metadatos; si no, crear
@@ -666,6 +680,7 @@ function Modulos() {
           const preguntaPayload = {
             id_examen: resultado.id,
             texto: p.texto.trim(),
+            puntaje: typeof p.puntaje !== "undefined" ? Number(p.puntaje) : 1,
           };
           const preguntaCreada = await crearPregunta(preguntaPayload);
           const id_pregunta = preguntaCreada?.id;
@@ -689,6 +704,7 @@ function Modulos() {
             const rp = await crearPregunta({
               id_examen: datos.id,
               texto: p.texto,
+              puntaje: typeof p.puntaje !== "undefined" ? Number(p.puntaje) : 1,
             });
             idPregunta = rp.id;
           } else {
@@ -807,6 +823,7 @@ function Modulos() {
           {
             idTemp: Date.now() + Math.random(),
             texto: "",
+            puntaje: 1,
             opciones: [
               { idTempOpt: Date.now() + 1, texto: "", es_correcta: false },
               { idTempOpt: Date.now() + 2, texto: "", es_correcta: false },
@@ -836,6 +853,18 @@ function Modulos() {
         ...prev.datos,
         preguntas: (prev.datos?.preguntas || []).map((p) =>
           p.idTemp === idTemp ? { ...p, texto } : p
+        ),
+      },
+    }));
+  };
+
+  const actualizarPuntajePregunta = (idTemp, puntaje) => {
+    setModalFormulario((prev) => ({
+      ...prev,
+      datos: {
+        ...prev.datos,
+        preguntas: (prev.datos?.preguntas || []).map((p) =>
+          p.idTemp === idTemp ? { ...p, puntaje: Number(puntaje) } : p
         ),
       },
     }));
@@ -1329,6 +1358,13 @@ function Modulos() {
                               Intentos: {exam.intentos_permitidos ?? 1}
                               {exam.tiempo_minutos
                                 ? ` • ${exam.tiempo_minutos} min`
+                                : ""}
+                              {typeof exam.puntaje_minimo_aprobacion !==
+                                "undefined" &&
+                              exam.puntaje_minimo_aprobacion !== null
+                                ? ` • Nota mínima: ${Number(
+                                    exam.puntaje_minimo_aprobacion
+                                  ).toFixed(2)}`
                                 : ""}
                             </small>
                           </div>
@@ -1926,6 +1962,51 @@ function Modulos() {
                 />
               </div>
 
+              <div className="modulos-form-group">
+                <label>Puntaje mínimo de aprobación:</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={
+                    typeof modalFormulario.datos.puntaje_minimo_aprobacion !==
+                    "undefined"
+                      ? modalFormulario.datos.puntaje_minimo_aprobacion
+                      : 0.0
+                  }
+                  onChange={(e) =>
+                    setModalFormulario({
+                      ...modalFormulario,
+                      datos: {
+                        ...modalFormulario.datos,
+                        puntaje_minimo_aprobacion:
+                          parseFloat(e.target.value) || 0.0,
+                      },
+                    })
+                  }
+                  className="modulos-form-input"
+                  min="0"
+                />
+              </div>
+
+              <div className="modulos-form-group modulos-form-checkbox">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={!!modalFormulario.datos.es_obligatorio}
+                    onChange={(e) =>
+                      setModalFormulario((prev) => ({
+                        ...prev,
+                        datos: {
+                          ...prev.datos,
+                          es_obligatorio: e.target.checked,
+                        },
+                      }))
+                    }
+                  />
+                  Examen obligatorio
+                </label>
+              </div>
+
               {/* Descripción: REMOVIDO */}
               {/* NUEVAS PREGUNTAS */}
               <div style={{ marginTop: 8 }}>
@@ -1972,6 +2053,34 @@ function Modulos() {
                         }
                         className="modulos-form-input"
                       />
+                      <div
+                        style={{
+                          marginTop: 8,
+                          display: "flex",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
+                        <label style={{ minWidth: 120 }}>Puntaje:</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={
+                            typeof pregunta.puntaje !== "undefined"
+                              ? pregunta.puntaje
+                              : 1
+                          }
+                          onChange={(e) =>
+                            actualizarPuntajePregunta(
+                              pregunta.idTemp,
+                              e.target.value
+                            )
+                          }
+                          className="modulos-form-input"
+                          style={{ width: 120 }}
+                        />
+                      </div>
                     </div>
 
                     <div style={{ marginTop: 8 }}>
